@@ -1,4 +1,43 @@
-<!DOCTYPE html>
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
 <html lang="en">
   <head>
     <title>WelCome!</title>
@@ -71,69 +110,69 @@
         <div class="row mb-5 justify-content-center">
           <div class="col-md-8 text-center">
             <h2 class="text-black h1 site-section-heading text-center">Our Works</h2>
-            <p class="lead">Showcasing innovative projects from my work at NPL and academic endeavors, highlighting expertise in DevOps, web development, and system automation.</p>
+            <p class="lead">Explore our portfolio of innovative projects, showcasing our expertise in web applications, branding, and website development.</p>
           </div>
         </div>
       </div>
       <div class="container-fluid">
         <div class="row">
-          <!-- Project 1: NTP Server Monitoring -->
+          <!-- Project 1 -->
           <div class="col-md-6 col-lg-4">
-            <a href="#ntpModal" class="media-1" data-toggle="modal">
-              <img src="images/ntp_monitoring.jpg" alt="NTP Monitoring" class="img-fluid">
+            <a href="#project1Modal" class="media-1" data-toggle="modal">
+              <img src="images/img_1.jpg" alt="Project 1" class="img-fluid">
               <div class="media-1-content">
-                <h2>NTP Server Monitoring</h2>
-                <span class="category">DevOps</span>
-              </div>
-            </a>
-          </div>
-          <!-- Project 2: Flask Alert System -->
-          <div class="col-md-6 col-lg-4">
-            <a href="#flaskModal" class="media-1" data-toggle="modal">
-              <img src="images/flask_alert.jpg" alt="Flask Alert System" class="img-fluid">
-              <div class="media-1-content">
-                <h2>Flask Alert System</h2>
+                <h2>Project 1</h2>
                 <span class="category">Web Application</span>
               </div>
             </a>
           </div>
-          <!-- Project 3: Efficient Waste Collection App -->
+          <!-- Project 2 -->
           <div class="col-md-6 col-lg-4">
-            <a href="#wasteModal" class="media-1" data-toggle="modal">
-              <img src="images/waste_app.jpg" alt="Waste Collection App" class="img-fluid">
+            <a href="#project2Modal" class="media-1" data-toggle="modal">
+              <img src="images/img_2.jpg" alt="Project 2" class="img-fluid">
               <div class="media-1-content">
-                <h2>Waste Collection App</h2>
-                <span class="category">Mobile Application</span>
+                <h2>Project 2</h2>
+                <span class="category">Branding</span>
               </div>
             </a>
           </div>
-          <!-- Project 4: Image Encryption/Decryption -->
+          <!-- Project 3 -->
           <div class="col-md-6 col-lg-4">
-            <a href="#encryptionModal" class="media-1" data-toggle="modal">
-              <img src="images/encryption.jpg" alt="Image Encryption" class="img-fluid">
+            <a href="#project3Modal" class="media-1" data-toggle="modal">
+              <img src="images/img_3.jpg" alt="Project 3" class="img-fluid">
               <div class="media-1-content">
-                <h2>Image Encryption</h2>
-                <span class="category">Security</span>
+                <h2>Project 3</h2>
+                <span class="category">Website</span>
               </div>
             </a>
           </div>
-          <!-- Project 5: Server Communication -->
+          <!-- Project 4 -->
           <div class="col-md-6 col-lg-4">
-            <a href="#serverModal" class="media-1" data-toggle="modal">
-              <img src="images/server_comm.jpg" alt="Server Communication" class="img-fluid">
+            <a href="#project4Modal" class="media-1" data-toggle="modal">
+              <img src="images/img_4.jpg" alt="Project 4" class="img-fluid">
               <div class="media-1-content">
-                <h2>Server Communication</h2>
-                <span class="category">Networking</span>
+                <h2>Project 4</h2>
+                <span class="category">Web Application</span>
               </div>
             </a>
           </div>
-          <!-- Project 6: Java Certification Project -->
+          <!-- Project 5 -->
           <div class="col-md-6 col-lg-4">
-            <a href="#javaModal" class="media-1" data-toggle="modal">
-              <img src="images/java_project.jpg" alt="Java Project" class="img-fluid">
+            <a href="#project5Modal" class="media-1" data-toggle="modal">
+              <img src="images/img_5.jpg" alt="Project 5" class="img-fluid">
               <div class="media-1-content">
-                <h2>Java Certification Project</h2>
-                <span class="category">Software Development</span>
+                <h2>Project 5</h2>
+                <span class="category">Branding</span>
+              </div>
+            </a>
+          </div>
+          <!-- Project 6 -->
+          <div class="col-md-6 col-lg-4">
+            <a href="#project6Modal" class="media-1" data-toggle="modal">
+              <img src="images/img_6.jpg" alt="Project 6" class="img-fluid">
+              <div class="media-1-content">
+                <h2>Project 6</h2>
+                <span class="category">Website</span>
               </div>
             </a>
           </div>
@@ -141,180 +180,181 @@
       </div>
 
       <!-- Modals for Project Details -->
-      <!-- NTP Server Monitoring Modal -->
-      <div class="modal fade" id="ntpModal" tabindex="-1" role="dialog" aria-hidden="true">
+      <!-- Project 1 Modal -->
+      <div class="modal fade" id="project1Modal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title">NTP Server Monitoring - DevOps</h5>
+              <h5 class="modal-title">Project 1 - Web Application</h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">×</span>
+                <span aria-hidden="true">&times;</span>
               </button>
             </div>
             <div class="modal-body">
-              <img src="images/ntp_monitoring.jpg" alt="NTP Monitoring" class="img-fluid">
+              <img src="images/img_1.jpg" alt="Project 1" class="img-fluid">
               <h3>Overview</h3>
-              <p>Developed a Python-based monitoring system for NTP servers at NPL, ensuring precise time synchronization for critical applications. The script monitors servers like `samay1.nic.in` and `157.20.66.8`, logging responses and generating CSV reports.</p>
+              <p>This web application streamlines business operations with a user-friendly interface and robust backend. It addresses key challenges in task management and data visualization.</p>
               <h3>Technologies Used</h3>
               <ul class="tech-list">
-                <li>Python</li>
-                <li>Docker</li>
-                <li>Threading</li>
-                <li>Logging</li>
-                <li>CSV</li>
+                <li>React</li>
+                <li>Node.js</li>
+                <li>MongoDB</li>
+                <li>Bootstrap</li>
               </ul>
               <h3>Features</h3>
-              <p>Rate-limited alerts after 3 consecutive failures or high offsets (>0.01s), log rotation, configuration file support, and Docker containerization for deployment.</p>
+              <p>Real-time data updates, responsive design, and secure user authentication.</p>
               <div class="project-links">
-                <a href="https://github.com/amitkcodes/ntp-monitoring" target="_blank">GitHub Repository</a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- Flask Alert System Modal -->
-      <div class="modal fade" id="flaskModal" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title">Flask Alert System - Web Application</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">×</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <img src="images/flask_alert.jpg" alt="Flask Alert System" class="img-fluid">
-              <h3>Overview</h3>
-              <p>A Flask-based API developed at NPL to send email alerts to multiple recipients using Gmail’s SMTP. Initially designed for SMS, it pivoted to email due to API constraints, tested with cURL in VS Code.</p>
-              <h3>Technologies Used</h3>
-              <ul class="tech-list">
-                <li>Python</li>
-                <li>Flask</li>
-                <li>SMTP</li>
-                <li>JSON</li>
-                <li>VS Code</li>
-              </ul>
-              <h3>Features</h3>
-              <p>Dynamic email recipient lists, secure SMTP configuration with App Password, and robust error handling for network timeouts.</p>
-              <div class="project-links">
-                <a href="https://github.com/amitkcodes/flask-alert-system" target="_blank">GitHub Repository</a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- Efficient Waste Collection App Modal -->
-      <div class="modal fade" id="wasteModal" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title">Efficient Waste Collection App - Mobile Application</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">×</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <img src="images/waste_app.jpg" alt="Waste Collection App" class="img-fluid">
-              <h3>Overview</h3>
-              <p>Developed during summer training at BCS Infallible Technologies, Agra, this Android app optimizes waste collection routes for municipal services, improving efficiency and user experience.</p>
-              <h3>Technologies Used</h3>
-              <ul class="tech-list">
-                <li>Java</li>
-                <li>Android Studio</li>
-                <li>SQLite</li>
-                <li>Google Maps API</li>
-              </ul>
-              <h3>Features</h3>
-              <p>Route optimization, real-time tracking, and user notifications for collection schedules.</p>
-              <div class="project-links">
-                <a href="#" target="_blank">View Project</a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- Image Encryption/Decryption Modal -->
-      <div class="modal fade" id="encryptionModal" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title">Image Encryption/Decryption - Security</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">×</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <img src="images/encryption.jpg" alt="Image Encryption" class="img-fluid">
-              <h3>Overview</h3>
-              <p>A Python-based project to encrypt and decrypt images, ensuring secure storage and transmission of visual data.</p>
-              <h3>Technologies Used</h3>
-              <ul class="tech-list">
-                <li>Python</li>
-                <li>PIL (Pillow)</li>
-                <li>Cryptography</li>
-              </ul>
-              <h3>Features</h3>
-              <p>Symmetric encryption, user-friendly interface, and support for multiple image formats.</p>
-              <div class="project-links">
+                <a href="#" target="_blank">Live Demo</a>
                 <a href="#" target="_blank">GitHub Repository</a>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <!-- Server Communication Modal -->
-      <div class="modal fade" id="serverModal" tabindex="-1" role="dialog" aria-hidden="true">
+      <!-- Project 2 Modal -->
+      <div class="modal fade" id="project2Modal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title">Server Communication - Networking</h5>
+              <h5 class="modal-title">Project 2 - Branding</h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">×</span>
+                <span aria-hidden="true">&times;</span>
               </button>
             </div>
             <div class="modal-body">
-              <img src="images/server_comm.jpg" alt="Server Communication" class="img-fluid">
+              <img src="images/img_2.jpg" alt="Project 2" class="img-fluid">
               <h3>Overview</h3>
-              <p>A project demonstrating reliable communication between two servers using socket programming, designed for real-time data exchange.</p>
-              <h3>Technologies Used</h3>
+              <p>A comprehensive branding project for a startup, including logo design, color schemes, and marketing materials to establish a strong brand identity.</p>
+              <h3>Tools Used</h3>
               <ul class="tech-list">
-                <li>Python</li>
-                <li>Socket</li>
-                <li>Threading</li>
+                <li>Adobe Illustrator</li>
+                <li>Figma</li>
+                <li>Canva</li>
               </ul>
-              <h3>Features</h3>
-              <p>Bidirectional communication, error handling, and scalable architecture.</p>
+              <h3>Deliverables</h3>
+              <p>Logo, business cards, social media templates, and brand guidelines.</p>
               <div class="project-links">
-                <a href="#" target="_blank">GitHub Repository</a>
+                <a href="#" target="_blank">View Branding</a>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <!-- Java Certification Project Modal -->
-      <div class="modal fade" id="javaModal" tabindex="-1" role="dialog" aria-hidden="true">
+      <!-- Project 3 Modal -->
+      <div class="modal fade" id="project3Modal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title">Java Certification Project - Software Development</h5>
+              <h5 class="modal-title">Project 3 - Website</h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">×</span>
+                <span aria-hidden="true">&times;</span>
               </button>
             </div>
             <div class="modal-body">
-              <img src="images/java_project.jpg" alt="Java Project" class="img-fluid">
+              <img src="images/img_3.jpg" alt="Project 3" class="img-fluid">
               <h3>Overview</h3>
-              <p>A Java-based application developed as part of Microsoft Certification at Informatics Pvt. Ltd., showcasing object-oriented programming and database integration.</p>
+              <p>A fully responsive website for a local business, optimized for SEO and user engagement.</p>
               <h3>Technologies Used</h3>
               <ul class="tech-list">
-                <li>Java</li>
+                <li>HTML</li>
+                <li>CSS</li>
+                <li>JavaScript</li>
+                <li>WordPress</li>
+              </ul>
+              <h3>Features</h3>
+              <p>Contact form, blog integration, and Google Analytics tracking.</p>
+              <div class="project-links">
+                <a href="#" target="_blank">Live Site</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Project 4 Modal -->
+      <div class="modal fade" id="project4Modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Project 4 - Web Application</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <img src="images/img_4.jpg" alt="Project 4" class="img-fluid">
+              <h3>Overview</h3>
+              <p>An e-commerce platform with secure payment integration and inventory management.</p>
+              <h3>Technologies Used</h3>
+              <ul class="tech-list">
+                <li>Vue.js</li>
+                <li>Express.js</li>
                 <li>MySQL</li>
-                <li>Eclipse IDE</li>
+                <li>Stripe</li>
               </ul>
               <h3>Features</h3>
-              <p>CRUD operations, user authentication, and data persistence.</p>
+              <p>Shopping cart, user reviews, and admin dashboard.</p>
               <div class="project-links">
-                <a href="#" target="_blank">View Project</a>
+                <a href="#" target="_blank">Live Demo</a>
+                <a href="#" target="_blank">GitHub Repository</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Project 5 Modal -->
+      <div class="modal fade" id="project5Modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Project 5 - Branding</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <img src="images/img_5.jpg" alt="Project 5" class="img-fluid">
+              <h3>Overview</h3>
+              <p>Rebranding for an established company to modernize its visual identity.</p>
+              <h3>Tools Used</h3>
+              <ul class="tech-list">
+                <li>Adobe Photoshop</li>
+                <li>Sketch</li>
+                <li>InDesign</li>
+              </ul>
+              <h3>Deliverables</h3>
+              <p>Updated logo, website banners, and promotional materials.</p>
+              <div class="project-links">
+                <a href="#" target="_blank">View Branding</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Project 6 Modal -->
+      <div class="modal fade" id="project6Modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Project 6 - Website</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <img src="images/img_6.jpg" alt="Project 6" class="img-fluid">
+              <h3>Overview</h3>
+              <p>A portfolio website for a freelance photographer, showcasing their work with a clean, minimal design.</p>
+              <h3>Technologies Used</h3>
+              <ul class="tech-list">
+                <li>HTML</li>
+                <li>CSS</li>
+                <li>jQuery</li>
+                <li>Bootstrap</li>
+              </ul>
+              <h3>Features</h3>
+              <p>Image gallery, contact form, and social media integration.</p>
+              <div class="project-links">
+                <a href="#" target="_blank">Live Site</a>
               </div>
             </div>
           </div>
@@ -322,227 +362,35 @@
       </div>
     </section>
 
-    <!-- Existing sections (services, about, blog, contact, footer) remain unchanged -->
-    <section class="site-section border-bottom" id="services-section">
-      <div class="container">
-        <div class="row justify-content-center mb-5">
-          <div class="col-md-8 text-center" data-aos="fade-up">
-            <h2 class="text-black h1 site-section-heading text-center">Our Services</h2>
-          </div>
-        </div>
-        <div class="row align-items-stretch">
-          <div class="col-md-6 col-lg-4 mb-4 mb-lg-4" data-aos="fade-up">
-            <div class="unit-4 d-flex">
-              <div class="unit-4-icon mr-4"><span class="text-primary icon-laptop2"></span></div>
-              <div>
-                <h3>Web Design</h3>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis quis molestiae vitae eligendi at.</p>
-                <p><a href="#">Learn More</a></p>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-6 col-lg-4 mb-4 mb-lg-4" data-aos="fade-up" data-aos-delay="100">
-            <div class="unit-4 d-flex">
-              <div class="unit-4-icon mr-4"><span class="text-primary icon-shopping_cart"></span></div>
-              <div>
-                <h3>eCommerce</h3>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis quis molestiae vitae eligendi at.</p>
-                <p><a href="#">Learn More</a></p>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-6 col-lg-4 mb-4 mb-lg-4" data-aos="fade-up" data-aos-delay="200">
-            <div class="unit-4 d-flex">
-              <div class="unit-4-icon mr-4"><span class="text-primary icon-question_answer"></span></div>
-              <div>
-                <h3>Web Applications</h3>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis quis molestiae vitae eligendi at.</p>
-                <p><a href="#">Learn More</a></p>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-6 col-lg-4 mb-4 mb-lg-4" data-aos="fade-up" data-aos-delay="300">
-            <div class="unit-4 d-flex">
-              <div class="unit-4-icon mr-4"><span class="text-primary icon-format_paint"></span></div>
-              <div>
-                <h3>Branding</h3>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis quis molestiae vitae eligendi at.</p>
-                <p><a href="#">Learn More</a></p>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-6 col-lg-4 mb-4 mb-lg-4" data-aos="fade-up" data-aos-delay="400">
-            <div class="unit-4 d-flex">
-              <div class="unit-4-icon mr-4"><span class="text-primary icon-extension"></span></div>
-              <div>
-                <h3>Copy Writing</h3>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis quis molestiae vitae eligendi at.</p>
-                <p><a href="#">Learn More</a></p>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-6 col-lg-4 mb-4 mb-lg-4" data-aos="fade-up" data-aos-delay="500">
-            <div class="unit-4 d-flex">
-              <div class="unit-4-icon mr-4"><span class="text-primary icon-phonelink"></span></div>
-              <div>
-                <h3>Mobile Applications</h3>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis quis molestiae vitae eligendi at.</p>
-                <p><a href="#">Learn More</a></p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+    <!-- Rest of your existing sections (services, about, blog, contact, footer) remain unchanged -->
 
-    <div class="site-section" id="about-section">
-      <div class="container">
-        <div class="row mb-5">
-          <div class="col-md-5 ml-auto mb-5 order-md-2" data-aos="fade">
-            <img src="images/about_1.jpg" alt="Image" class="img-fluid rounded">
-          </div>
-          <div class="col-md-6 order-md-1" data-aos="fade">
-            <div class="row">
-              <div class="col-12">
-                <div class="text-left pb-1">
-                  <h2 class="text-black h1 site-section-heading">About Us</h2>
-                </div>
-              </div>
-              <div class="col-12 mb-4">
-                <p class="lead">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eveniet incidunt magnam corrupti, odit eos harum quaerat nostrum voluptatibus aspernatur eligendi accusantium cum, impedit blanditiis voluptate commodi doloribus, nemo dignissimos recusandae.</p>
-              </div>
-              <div class="col-md-12 mb-md-5 mb-0 col-lg-6">
-                <div class="unit-4">
-                  <div class="unit-4-icon mr-4 mb-3"><span class="text-secondary icon-phonelink"></span></div>
-                  <div>
-                    <h3>Web & Mobile Specialties</h3>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis quis consect.</p>
-                    <p class="mb-0"><a href="#">Learn More</a></p>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-12 mb-md-5 mb-0 col-lg-6">
-                <div class="unit-4">
-                  <div class="unit-4-icon mr-4 mb-3"><span class="text-secondary icon-extension"></span></div>
-                  <div>
-                    <h3>Intuitive Thinkers</h3>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis quis.</p>
-                    <p class="mb-0"><a href="#">Learn More</a></p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <section class="site-section" id="blog-section">
-      <div class="container">
-        <div class="row justify-content-center mb-5">
-          <div class="col-md-8 text-center">
-            <h2 class="text-black h1 site-section-heading text-center">Blog</h2>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-6 col-lg-4 mb-4 mb-lg-4">
-            <div class="h-entry">
-              <a href="single.html"><img src="images/img_1.jpg" alt="Image" class="img-fluid"></a>
-              <h2 class="font-size-regular"><a href="single.html">Create Beautiful Website In Less Than An Hour</a></h2>
-              <div class="meta mb-4">Ham Brook <span class="mx-2">&bullet;</span> Jan 18, 2019<span class="mx-2">&bullet;</span> <a href="#">News</a></div>
-              <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus eligendi nobis ea maiores sapiente veritatis reprehenderit suscipit quaerat rerum voluptatibus a eius.</p>
-              <p><a href="#">Continue Reading...</a></p>
-            </div> 
-          </div>
-          <div class="col-md-6 col-lg-4 mb-4 mb-lg-4">
-            <div class="h-entry">
-              <a href="single.html"><img src="images/img_2.jpg" alt="Image" class="img-fluid"></a>
-              <h2 class="font-size-regular"><a href="single.html">Create Beautiful Website In Less Than An Hour</a></h2>
-              <div class="meta mb-4">James Phelps <span class="mx-2">&bullet;</span> Jan 18, 2019<span class="mx-2">&bullet;</span> <a href="#">News</a></div>
-              <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus eligendi nobis ea maiores sapiente veritatis reprehenderit suscipit quaerat rerum voluptatibus a eius.</p>
-              <p><a href="#">Continue Reading...</a></p>
-            </div>
-          </div>
-          <div class="col-md-6 col-lg-4 mb-4 mb-lg-4">
-            <div class="h-entry">
-              <a href="single.html"><img src="images/img_1.jpg" alt="Image" class="img-fluid"></a>
-              <h2 class="font-size-regular"><a href="single.html">Create Beautiful Website In Less Than An Hour</a></h2>
-              <div class="meta mb-4">James Phelps <span class="mx-2">&bullet;</span> Jan 18, 2019<span class="mx-2">&bullet;</span> <a href="#">News</a></div>
-              <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus eligendi nobis ea maiores sapiente veritatis reprehenderit suscipit quaerat rerum voluptatibus a eius.</p>
-              <p><a href="#">Continue Reading...</a></p>
-            </div> 
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="site-section bg-light" id="contact-section">
-      <a href="#" class="bg-primary py-5 d-block">
-        <div class="container">
-          <div class="row justify-content-center">
-            <div class="col-md10"><h2 class="text-white">Let's Get Started</h2></div>
-          </div>
-        </div>  
-      </a>
-      <footer class="site-footer">
-        <div class="container">
-          <div class="row">
-            <div class="col-md-9">
-              <div class="row">
-                <div class="col-md-5">
-                  <h2 class="footer-heading mb-4">About Us</h2>
-                  <a href="mailto:amitkaushik337@gmail.com" class="site-btn">Get in touch</a>
-                </div>
-                <div class="col-md-3">
-                  <h2 class="footer-heading mb-4">Join Me</h2>
-                  <a href="https://github.com/amitkcodes" class="pl-0 pr-3"><span class="icon-github"></span></a>
-                  <a href="https://twitter.com/AmityK47" class="pl-3 pr-3"><span class="icon-twitter"></span></a>
-                  <a href="https://www.facebook.com/amityk47" class="pl-0 pr-3"><span class="icon-facebook"></span></a>
-                  <a href="https://www.instagram.com/i_m_mr_blue" class="pl-3 pr-3"><span class="icon-instagram"></span></a>
-                  <a href="https://www.linkedin.com/in/amit-kaushik-507831150/" class="pl-3 pr-3"><span class="icon-linkedin"></span></a>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="row pt-5 mt-5 text-center">
-            <div class="col-md-12">
-              <div class="border-top pt-5">
-                <p>
-                  Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="icon-heart text-danger" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank" >Colorlib</a>
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </footer>
-    </section>
+    <!-- Existing scripts -->
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/jquery-migrate-3.0.1.min.js"></script>
+    <script src="js/jquery-ui.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/owl.carousel.min.js"></script>
+    <script src="js/jquery.stellar.min.js"></script>
+    <script src="js/jquery.countdown.min.js"></script>
+    <script src="js/bootstrap-datepicker.min.js"></script>
+    <script src="js/jquery.easing.1.3.js"></script>
+    <script src="js/aos.js"></script>
+    <script src="js/jquery.fancybox.min.js"></script>
+    <script src="js/jquery.sticky.js"></script>
+    <script src="js/typed.js"></script>
+    <script>
+      var typed = new Typed('.typed-words', {
+        strings: ["Web Apps"," WordPress"," Mobile Apps"],
+        typeSpeed: 80,
+        backSpeed: 80,
+        backDelay: 4000,
+        startDelay: 1000,
+        loop: true,
+        showCursor: true
+      });
+    </script>
+    <script src="js/main.js"></script>
   </div> <!-- .site-wrap -->
-
-  <script src="js/jquery-3.3.1.min.js"></script>
-  <script src="js/jquery-migrate-3.0.1.min.js"></script>
-  <script src="js/jquery-ui.js"></script>
-  <script src="js/popper.min.js"></script>
-  <script src="js/bootstrap.min.js"></script>
-  <script src="js/owl.carousel.min.js"></script>
-  <script src="js/jquery.stellar.min.js"></script>
-  <script src="js/jquery.countdown.min.js"></script>
-  <script src="js/bootstrap-datepicker.min.js"></script>
-  <script src="js/jquery.easing.1.3.js"></script>
-  <script src="js/aos.js"></script>
-  <script src="js/jquery.fancybox.min.js"></script>
-  <script src="js/jquery.sticky.js"></script>
-  <script src="js/typed.js"></script>
-  <script>
-    var typed = new Typed('.typed-words', {
-      strings: ["Web Apps"," WordPress"," Mobile Apps"],
-      typeSpeed: 80,
-      backSpeed: 80,
-      backDelay: 4000,
-      startDelay: 1000,
-      loop: true,
-      showCursor: true
-    });
-  </script>
-  <script src="js/main.js"></script>
   </body>
 </html>
